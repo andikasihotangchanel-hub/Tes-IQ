@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Tes IQ 35 Tantangan</title>
+<style>
+body{
+  font-family: Arial;
+  text-align:center;
+  background:linear-gradient(135deg,#1e3c72,#2a5298);
+  color:white;
+}
+.container{
+  background:white;
+  color:black;
+  width:90%;
+  max-width:600px;
+  margin:auto;
+  margin-top:40px;
+  padding:20px;
+  border-radius:15px;
+}
+button{
+  padding:10px 20px;
+  margin:5px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  background:#2a5298;
+  color:white;
+}
+button:hover{
+  background:#1e3c72;
+}
+#result{
+  font-size:18px;
+  margin-top:15px;
+}
+.level{
+  font-size:14px;
+  color:gray;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h2>🧠 Tes IQ 35 Tantangan</h2>
+<div id="level" class="level"></div>
+<h3 id="question"></h3>
+<div id="answers"></div>
+<div id="result"></div>
+</div>
+
+<script>
+
+let current = 0;
+let score = 0;
+
+const questions = [];
+
+// =======================
+// GENERATE 35 SOAL
+// =======================
+
+for(let i=1;i<=35;i++){
+  let difficulty="";
+  let a,b,correct;
+
+  if(i<=15){
+    difficulty="Mudah";
+    a=Math.floor(Math.random()*10)+1;
+    b=Math.floor(Math.random()*10)+1;
+    correct=a+b;
+    questions.push({
+      q:`(${i}) ${a} + ${b} = ?`,
+      options:[correct, correct+1, correct-1, correct+2],
+      answer:correct,
+      level:difficulty
+    });
+  }
+
+  else if(i<=25){
+    difficulty="Susah";
+    a=Math.floor(Math.random()*20)+5;
+    b=Math.floor(Math.random()*10)+2;
+    correct=a*b;
+    questions.push({
+      q:`(${i}) ${a} × ${b} = ?`,
+      options:[correct, correct+5, correct-5, correct+10],
+      answer:correct,
+      level:difficulty
+    });
+  }
+
+  else if(i<=29){
+    difficulty="Terlalu Susah";
+    a=Math.floor(Math.random()*50)+10;
+    correct=a*a;
+    questions.push({
+      q:`(${i}) ${a}² = ?`,
+      options:[correct, correct+10, correct-10, correct+20],
+      answer:correct,
+      level:difficulty
+    });
+  }
+
+  else{
+    difficulty="IQ Tinggi";
+    a=Math.floor(Math.random()*20)+5;
+    correct=a*a + a;
+    questions.push({
+      q:`(${i}) ${a}² + ${a} = ?`,
+      options:[correct, correct+15, correct-15, correct+5],
+      answer:correct,
+      level:difficulty
+    });
+  }
+}
+
+// =======================
+// TAMPILKAN SOAL
+// =======================
+
+function showQuestion(){
+  if(current>=questions.length){
+    showResult();
+    return;
+  }
+
+  document.getElementById("result").innerHTML="";
+  document.getElementById("level").innerHTML="Level: "+questions[current].level;
+  document.getElementById("question").innerHTML=questions[current].q;
+
+  let answersHTML="";
+  questions[current].options.sort(()=>Math.random()-0.5);
+
+  questions[current].options.forEach(option=>{
+    answersHTML+=`<button onclick="checkAnswer(${option})">${option}</button>`;
+  });
+
+  document.getElementById("answers").innerHTML=answersHTML;
+}
+
+function checkAnswer(selected){
+  if(selected===questions[current].answer){
+    score++;
+  }
+  current++;
+  showQuestion();
+}
+
+// =======================
+// HASIL AKHIR
+// =======================
+
+function showResult(){
+  let iqScore = Math.floor((score/35)*100);
+  let kategori="";
+
+  if(iqScore<50) kategori="Di bawah rata-rata";
+  else if(iqScore<80) kategori="Rata-rata";
+  else if(iqScore<95) kategori="Di atas rata-rata";
+  else kategori="Jenius 🔥";
+
+  document.getElementById("question").innerHTML="Tes Selesai!";
+  document.getElementById("answers").innerHTML="";
+  document.getElementById("level").innerHTML="";
+  document.getElementById("result").innerHTML=
+    `Skor Benar: ${score}/35 <br>
+     Estimasi IQ: ${iqScore} <br>
+     Kategori: ${kategori}`;
+}
+
+showQuestion();
+
+</script>
+
+</body>
+</html>
